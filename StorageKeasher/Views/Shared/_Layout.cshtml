@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+@{
+    bool ContainsAny(string origin, List<string> listToCheck)
+    {
+        bool res = false;
+        Parallel.ForEach(listToCheck, (item) =>
+        {
+            if (origin.Contains(item))
+                res = true;
+        });
+        return res;
+    }
+    string language = "he";
+    bool administrationLayout = false;
+
+
+    string currentURL = Context.Request.Path;
+    string templatePath = Context.Request.PathBase + "/Templates/";
+    currentURL = currentURL.ToLower();
+    List<string> adminStrings = new List<string> {
+        "Administration".ToLower(),
+        "Identity".ToLower(),
+        "EventPlaces".ToLower(),
+        "Events/Events".ToLower(),
+        "EventTypes".ToLower(),
+        "EventStatus".ToLower(),
+        "LandingPages/Index".ToLower(),
+        "LandingPages/Create".ToLower(),
+        "LandingPages/Edit".ToLower(),
+        "LandingPages/Delete".ToLower(),
+        "Tickets/Tickets".ToLower(),
+        "Tickets/Create".ToLower(),
+        "Tickets/Edit".ToLower(),
+        "Tickets/Delete".ToLower(),
+        "Tickets/TicketAllocationMongos".ToLower()
+    };
+    if (ContainsAny(currentURL, adminStrings) || currentURL.EndsWith("LandingPages".ToLower()))
+    {
+        administrationLayout = true;
+        templatePath += "Intensify/assets";
+    }
+    else
+    {
+        templatePath += "Broadcast/assets";
+    }
+
+}
+<html @if (language == "he") { @: dir="rtl" lang='he'>
+}
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Storage_Keasher</title>
+
+    <environment include="Development">
+        @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />*@
+        @if (language == "he")
+        {
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" integrity="sha384-vus3nQHTD+5mpDiZ4rkEPlnkcyTP+49BhJ4wJeJunw06ZAp+wzzeBPUXr42fi8If" crossorigin="anonymous">
+        }
+
+    </environment>
+    <environment exclude="Development">
+        @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+            asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+            asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+            crossorigin="anonymous"
+            integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />*@
+        @if (language == "he")
+        {
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+                  crossorigin="anonymous"
+                  integrity="sha384-vus3nQHTD+5mpDiZ4rkEPlnkcyTP+49BhJ4wJeJunw06ZAp+wzzeBPUXr42fi8If" />
+        }
+
+    </environment>
+
+
+    <link rel="stylesheet" href="@templatePath/css/main.css" />
+
+
+    @*<link rel="stylesheet" href="~/css/site.css" />*@
+    @RenderSection("head", false)
+</head>
+<body class="subpage">
+    <header id="header">
+        <nav class="left">
+            <a href="#menu"><span>תפריט</span></a>
+        </nav>
+        @if (administrationLayout)
+        {
+            <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">TiK&TaK</a>
+            <nav class="right">
+                @*<a href="#" class="button alt">כניסה</a>*@
+                <partial name="_LoginPartial" />
+            </nav>
+        }
+        <!-- Nav -->
+        <nav id="menu">
+            <ul class="links">
+                <li><br /><br /></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">ראשי</a></li>
+
+                @if (administrationLayout)
+                {
+                    <li><a asp-area="Administration" asp-controller="Default" asp-action="Index">ניהול</a></li>
+                }
+
+                <li><a asp-area="Storage" asp-controller="Item" asp-action="Index">אירועים</a></li>
+                <li><a asp-area="Events" asp-controller="EventPlaces" asp-action="Index">מקומות</a></li>
+                <li><a asp-area="Events" asp-controller="EventTypes" asp-action="Index">סוגי אירועים</a></li>
+                <li><a asp-area="Events" asp-controller="EventStatus" asp-action="Index">מצבי אירועים</a></li>
+                <li><a asp-area="Events" asp-controller="LandingPages" asp-action="Index">דפי נחיתה</a></li>
+                <li><a asp-area="Administration" asp-controller="Default" asp-action="Index">פאנל ניהול</a></li>
+                <li><a asp-area="Tickets" asp-controller="Tickets" asp-action="Index">כרטיסים</a></li>
+                <li><a asp-area="Tickets" asp-controller="TicketAllocationMongos" asp-action="Index">הקצאות</a></li>
+
+                @RenderSection("NavLinks", required: false)
+            </ul>
+        </nav>
+        <!--
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ראשי</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+            -->
+    </header>
+    <div class="container">
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2019 - TiK&TaK - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=">
+        </script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @if (language == "he")
+    {
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="~/lib/popper.js/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" integrity="sha384-a9xOd0rz8w0J8zqj1qJic7GPFfyMfoiuDjC9rqXlVOcGO/dmRqzMn34gZYDTel8k" crossorigin="anonymous"></script>
+    }
+
+    <script src="@templatePath/js/jquery.min.js"></script>
+    <script src="@templatePath/js/jquery.scrolly.min.js"></script>
+    <script src="@templatePath/js/skel.min.js"></script>
+    <script src="@templatePath/js/util.js"></script>
+    <script src="@templatePath/js/main.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

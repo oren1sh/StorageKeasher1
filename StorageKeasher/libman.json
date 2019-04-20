@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "vue@2.6.10",
+      "destination": "wwwroot/lib/vue/"
+    },
+    {
+      "library": "axios@0.18.0",
+      "destination": "wwwroot/lib/axios/"
+    },
+    {
+      "library": "webpack-cesium@1.37.0",
+      "destination": "wwwroot/lib/webpack-cesium/"
+    }
+  ,
+{
+  "library": "popper.js@1.15.0",
+  "destination": "wwwroot/lib/popper.js/"
+}
+]
+}
